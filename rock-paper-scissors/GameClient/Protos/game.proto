@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+option csharp_namespace = "RockPaperScissors.Client";
+
+package game;
+
+service GameService {
+  rpc TransferMoney (TransferMoneyRequest) returns (TransferMoneyResponse);
+  rpc GetBalance (BalanceRequest) returns (BalanceResponse);
+  rpc ListGames (ListGamesRequest) returns (ListGamesResponse);
+  rpc JoinGame (JoinGameRequest) returns (JoinGameResponse);
+  rpc CreateMatch (CreateMatchRequest) returns (CreateMatchResponse);
+  rpc MakeMove (MakeMoveRequest) returns (MakeMoveResponse);
+}
+
+message MakeMoveRequest {
+  int32 userId = 1;
+  int32 matchId = 2;
+  string move = 3;
+}
+
+message MakeMoveResponse {
+  string result = 1;
+}
+
+
+message CreateMatchRequest {
+  string userId = 1;
+  double betAmount = 2;
+}
+
+message CreateMatchResponse {
+  string matchId = 1;
+  string status = 2;
+}
+
+message TransferMoneyRequest {
+  string fromUserId = 1;
+  string toUserId = 2;
+  double amount = 3;
+}
+
+message TransferMoneyResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message BalanceRequest {
+  string userId = 1;
+}
+
+message BalanceResponse {
+  double balance = 1;
+}
+
+message ListGamesRequest {}
+
+message ListGamesResponse {
+  repeated Game games = 1;
+}
+
+message Game {
+  string gameId = 1;
+  string player1Id = 2;
+  string player2Id = 3;
+  double betAmount = 4;
+  bool isWaiting = 5;
+}
+
+message JoinGameRequest {
+  string gameId = 1;
+  string userId = 2;
+}
+
+message JoinGameResponse {
+  bool success = 1;
+  string message = 2;
+}
