@@ -12,8 +12,6 @@ namespace GameClient
         static async Task Main(string[] args)
         {
             var httpClient = new HttpClient();
-
-            // Настраиваем GrpcChannel
             var channel = GrpcChannel.ForAddress("https://localhost:5001", new GrpcChannelOptions
             {
                 HttpClient = httpClient
