@@ -1,4 +1,7 @@
+using System;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.EntityFrameworkCore;
+using RockPaperScissors.Db;
 
 namespace RockPaperScissors
 {
@@ -6,9 +9,31 @@ namespace RockPaperScissors
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+
+            ApplyMigrations(host);
+
+            host.Run();
+
         }
-        
+
+        private static void ApplyMigrations(IHost host)
+        {
+            using var scope = host.Services.CreateScope();
+            var services = scope.ServiceProvider;
+            try
+            {
+                var context = services.GetRequiredService<GameDbContext>();
+                context.Database.Migrate();
+            }
+            catch (Exception ex)
+            {
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                logger.LogError(ex, "Ошибка при миграции базы данных");
+            }
+        }
+
+
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
